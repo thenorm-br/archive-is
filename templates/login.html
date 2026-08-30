@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Acervo Digital Telegram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+    </style>
+</head>
+<body class="h-full flex items-center justify-center p-4 bg-slate-950 text-slate-100 overflow-hidden relative">
+
+    <!-- Efeito de Fundo Decorativo -->
+    <div class="absolute top-0 -left-4 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+    <div class="absolute top-0 -right-4 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+
+    <div class="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl p-8 z-10">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
+                <i class="fa-brands fa-telegram text-3xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Acervo Digital</h1>
+            <p class="text-sm text-slate-400 mt-1">Portal Central de Arquivos & Documentos</p>
+        </div>
+
+        <!-- Alertas de Erro ou Sucesso -->
+        {% if erro %}
+        <div class="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
+            <i class="fa-solid fa-circle-exclamation mt-0.5 text-base"></i>
+            <div>{{ erro }}</div>
+        </div>
+        {% endif %}
+
+        {% if sucesso %}
+        <div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm flex items-start gap-3">
+            <i class="fa-solid fa-circle-check mt-0.5 text-base"></i>
+            <div>{{ sucesso }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Abas de Alternância -->
+        <div class="flex border-b border-slate-800 mb-6" id="tabContainer">
+            <button onclick="alternarAba('login')" id="tabLogin" class="flex-1 pb-3 text-center font-medium text-sm text-blue-400 border-b-2 border-blue-500 transition">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i>Entrar
+            </button>
+            <button onclick="alternarAba('cadastro')" id="tabCadastro" class="flex-1 pb-3 text-center font-medium text-sm text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition">
+                <i class="fa-solid fa-user-plus mr-2"></i>Criar Conta
+            </button>
+        </div>
+
+        <!-- Formulário de Login -->
+        <form id="formLogin" action="/auth/login" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">E-mail</label>
+                <div class="relative">
+                    <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-500"></i>
+                    <input type="email" name="email" required placeholder="seu@email.com" class="w-full bg-slate-950/70 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Senha</label>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-500"></i>
+                    <input type="password" name="senha" required placeholder="••••••••" class="w-full bg-slate-950/70 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition duration-200 transform hover:-translate-y-0.5">
+                Acessar Acervo
+            </button>
+        </form>
+
+        <!-- Formulário de Cadastro -->
+        <form id="formCadastro" action="/auth/cadastro" method="POST" class="space-y-4 hidden">
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Seu Nome Completo</label>
+                <div class="relative">
+                    <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-500"></i>
+                    <input type="text" name="nome" required placeholder="Nome e Sobrenome" class="w-full bg-slate-950/70 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">E-mail</label>
+                <div class="relative">
+                    <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-500"></i>
+                    <input type="email" name="email" required placeholder="seu@email.com" class="w-full bg-slate-950/70 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Senha de Acesso</label>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-500"></i>
+                    <input type="password" name="senha" required placeholder="Crie uma senha forte" class="w-full bg-slate-950/70 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                </div>
+            </div>
+
+            <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-xs text-blue-300 flex items-start gap-2">
+                <i class="fa-solid fa-shield-halved mt-0.5"></i>
+                <span>Novas contas passam por aprovação do administrador antes de liberar o acesso.</span>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/30 transition duration-200 transform hover:-translate-y-0.5">
+                Solicitar Cadastro
+            </button>
+        </form>
+
+        <!-- Footer Informativo -->
+        <div class="mt-8 pt-6 border-t border-slate-800/80 text-center">
+            <p class="text-xs text-slate-500">
+                🔒 Acesso Restrito & Criptografado &bull; Acervo Digital &copy; 2026
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function alternarAba(aba) {
+            const formLogin = document.getElementById('formLogin');
+            const formCadastro = document.getElementById('formCadastro');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabCadastro = document.getElementById('tabCadastro');
+
+            if (aba === 'login') {
+                formLogin.classList.remove('hidden');
+                formCadastro.classList.add('hidden');
+                tabLogin.className = "flex-1 pb-3 text-center font-medium text-sm text-blue-400 border-b-2 border-blue-500 transition";
+                tabCadastro.className = "flex-1 pb-3 text-center font-medium text-sm text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition";
+            } else {
+                formLogin.classList.add('hidden');
+                formCadastro.classList.remove('hidden');
+                tabCadastro.className = "flex-1 pb-3 text-center font-medium text-sm text-emerald-400 border-b-2 border-emerald-500 transition";
+                tabLogin.className = "flex-1 pb-3 text-center font-medium text-sm text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition";
+            }
+        }
+    </script>
+</body>
+</html>

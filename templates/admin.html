@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Aprovação de Usuários</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-slate-950 text-slate-100 flex flex-col font-sans">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-500/20 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400">
+                        <i class="fa-solid fa-user-shield text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-lg text-white tracking-tight">Painel de Controle</span>
+                        <span class="text-xs text-amber-400 block -mt-1 font-mono">Administração de Acesso</span>
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-3">
+                    <a href="/" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-2 transition">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Voltar ao Acervo</span>
+                    </a>
+                    <a href="/logout" title="Sair" class="p-2 text-slate-400 hover:text-red-400 transition">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+        <!-- Top Header Stats -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-white">Gerenciamento de Usuários</h1>
+                <p class="text-sm text-slate-400">Aprove ou bloqueie o acesso de pessoas cadastradas na plataforma.</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div class="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs">
+                    <span class="text-slate-400">Total de Cadastros:</span>
+                    <strong class="text-white ml-1">{{ usuarios|length }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table Card -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-950/60 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                        <tr>
+                            <th class="px-6 py-4">Usuário</th>
+                            <th class="px-6 py-4">E-mail</th>
+                            <th class="px-6 py-4">Tipo</th>
+                            <th class="px-6 py-4">Status Atual</th>
+                            <th class="px-6 py-4">Data Cadastro</th>
+                            <th class="px-6 py-4 text-right">Ação de Acesso</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 font-medium">
+                        {% for u in usuarios %}
+                        <tr class="hover:bg-slate-800/30 transition">
+                            <!-- Nome -->
+                            <td class="px-6 py-4 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-slate-300">
+                                    {{ u.nome[0].upper() }}
+                                </div>
+                                <span class="text-white font-semibold">{{ u.nome }}</span>
+                            </td>
+
+                            <!-- E-mail -->
+                            <td class="px-6 py-4 font-mono text-xs text-slate-300">
+                                {{ u.email }}
+                            </td>
+
+                            <!-- Role -->
+                            <td class="px-6 py-4">
+                                {% if u.role == 'admin' %}
+                                <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/20 text-xs font-semibold">
+                                    <i class="fa-solid fa-crown mr-1"></i>Admin
+                                </span>
+                                {% else %}
+                                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-400 text-xs">
+                                    Usuário
+                                </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Status -->
+                            <td class="px-6 py-4">
+                                {% if u.status == 'aprovado' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Aprovado
+                                </span>
+                                {% elif u.status == 'pendente' %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 text-xs font-semibold animate-pulse">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Pendente
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Bloqueado
+                                </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Data -->
+                            <td class="px-6 py-4 text-xs text-slate-400">
+                                {{ u.criado_em or 'Hoje' }}
+                            </td>
+
+                            <!-- Ações -->
+                            <td class="px-6 py-4 text-right">
+                                {% if u.role != 'admin' %}
+                                <div class="flex items-center justify-end gap-2">
+                                    {% if u.status != 'aprovado' %}
+                                    <form action="/admin/usuario/{{ u.id }}/status" method="POST" class="inline">
+                                        <input type="hidden" name="novo_status" value="aprovado">
+                                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
+                                            <i class="fa-solid fa-check"></i> Aprovar
+                                        </button>
+                                    </form>
+                                    {% endif %}
+
+                                    {% if u.status != 'bloqueado' %}
+                                    <form action="/admin/usuario/{{ u.id }}/status" method="POST" class="inline">
+                                        <input type="hidden" name="novo_status" value="bloqueado">
+                                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600 border border-red-500/30 text-red-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition">
+                                            <i class="fa-solid fa-ban"></i> Bloquear
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <span class="text-xs text-slate-500 italic">Conta Principal</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900/60 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+        Painel Administrativo &bull; Acervo Digital &copy; 2026
+    </footer>
+
+</body>
+</html>
